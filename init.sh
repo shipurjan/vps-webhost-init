@@ -261,6 +261,6 @@ git config --global --unset advice.detachedHead
 
 # Cleanup
 rm -rf /tmp/vps-webhost-init
-rm -f /root/init.sh /root/setup-config.sh
+rm -f /root/init.sh /root/setup-config.sh /root/default.conf
 
 echo "=== Setup complete ==="
