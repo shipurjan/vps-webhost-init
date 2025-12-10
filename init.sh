@@ -46,7 +46,7 @@ ADMIN_PASSWORD="changeme"
 EOF
 
 echo "=== Please fill in your configuration ==="
-$EDITOR "$CONFIG_FILE"
+$EDITOR "$CONFIG_FILE" < /dev/tty
 
 source "$CONFIG_FILE"
 
