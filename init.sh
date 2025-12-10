@@ -34,8 +34,11 @@ cat >"$CONFIG_FILE" <<'EOF'
 # Your domain name (e.g. example.com)
 DOMAIN="example.com"
 
-# Your email address (used for SSL certificates and notifications)
+# Your email address (used for SSL certificates, notifications, and git commits)
 EMAIL="you@example.com"
+
+# Your full name (used for git commits)
+FULL_NAME="Your Name"
 
 # Admin panel login credentials (will be encrypted)
 ADMIN_LOGIN="admin"
@@ -199,11 +202,14 @@ EOF
 
 # Initialize fresh git repo with initial commit
 cd "/root/$DOMAIN"
-git config --global user.email "$EMAIL"
-git config --global user.name "vps-webhost-init"
+git config --global core.pager ''
 git init -b master
 git add .
-git commit -m "init"
+git -c user.email='<>' -c user.name='vps-webhost-init' commit -m "init"
+
+# Set git identity for future commits
+git config --global user.email "$EMAIL"
+git config --global user.name "$FULL_NAME"
 cd /root
 
 # Restore default git advice
