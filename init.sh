@@ -26,7 +26,8 @@ echo "=== Configuring locales ==="
 apt install -y locales
 sed -i 's/^# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 
-# Apply locale settings to current shell session before generating
+# Unset broken locale variables from SSH client and set proper ones
+unset LC_CTYPE
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
