@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Prevent interactive prompts during package installation
+export DEBIAN_FRONTEND=noninteractive
+
 # Pinned versions
 OHMYZSH_COMMIT="92aed2e93624124182ba977a91efa5bbe1e76d5f"
 ZSH_AUTOSUGGESTIONS_COMMIT="85919cd1ffa7d2d5412f6d3fe437ebdbeeec4fc5"
@@ -263,4 +266,9 @@ git config --global --unset advice.detachedHead
 rm -rf /tmp/vps-webhost-init
 rm -f /root/init.sh /root/setup-config.sh /root/default.conf
 
+# Restore interactive frontend
+unset DEBIAN_FRONTEND
+
 echo "=== Setup complete ==="
+echo "=== Launching zsh ==="
+exec zsh
