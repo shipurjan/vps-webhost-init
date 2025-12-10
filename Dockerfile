@@ -1,5 +1,6 @@
 FROM debian:latest
 
-COPY init.sh /init.sh
+COPY init.sh /root/init.sh
+WORKDIR /root
 
-CMD ["bash", "/init.sh"]
+CMD ["bash", "-c", "bash /root/init.sh && exec zsh"]
