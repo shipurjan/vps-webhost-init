@@ -213,6 +213,14 @@ alias ll='ls -l'
 alias l='ls -lA'
 alias grep='grep --color=auto'
 alias diff='diff --color=auto'
+
+# Auto-attach to tmux session on SSH login
+if [[ -z "$TMUX" ]] && [[ -n "$SSH_CONNECTION" ]]; then
+  TMUX_SESSION=$(tmux ls 2>/dev/null | head -n1 | cut -d: -f1)
+  if [[ -n "$TMUX_SESSION" ]]; then
+    exec tmux attach-session -t "$TMUX_SESSION"
+  fi
+fi
 EOF
 
 chsh -s $(which zsh)
