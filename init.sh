@@ -376,26 +376,29 @@ echo "Containers started. Check status in lazydocker."
 cd /root
 
 echo "=== Setup complete ==="
-echo "=== Launching tmux session: $DOMAIN ==="
+
+# Sanitize domain name for tmux session (only alphanumeric and underscore allowed)
+TMUX_SESSION=$(echo "$DOMAIN" | sed 's/[^a-zA-Z0-9_]/_/g')
+echo "=== Launching tmux session: $TMUX_SESSION ==="
 
 # Check if session already exists
-if tmux has-session -t "$DOMAIN" 2>/dev/null; then
-  echo "Tmux session '$DOMAIN' already exists. Attaching..."
-  ( exec </dev/tty; exec <&1; exec tmux attach-session -t "$DOMAIN" )
+if tmux has-session -t "$TMUX_SESSION" 2>/dev/null; then
+  echo "Tmux session '$TMUX_SESSION' already exists. Attaching..."
+  ( exec </dev/tty; exec <&1; exec tmux attach-session -t "$TMUX_SESSION" )
   exit 0
 fi
 
 # Create detached session in project directory
-tmux new-session -d -s "$DOMAIN" -c "/root/$DOMAIN"
+tmux new-session -d -s "$TMUX_SESSION" -c "/root/$DOMAIN"
 
 # Split window vertically (left 70%, right 30%)
-tmux split-window -h -t "$DOMAIN:0" -p 30
+tmux split-window -h -t "$TMUX_SESSION:0" -p 30
 
 # Select left pane (pane 0) - main console
-tmux select-pane -t "$DOMAIN:0.0"
+tmux select-pane -t "$TMUX_SESSION:0.0"
 
 # Send lazydocker command to right pane (pane 1)
-tmux send-keys -t "$DOMAIN:0.1" 'lazydocker' C-m
+tmux send-keys -t "$TMUX_SESSION:0.1" 'lazydocker' C-m
 
 # Attach to session with proper terminal handling
-( exec </dev/tty; exec <&1; exec tmux attach-session -t "$DOMAIN" )
+( exec </dev/tty; exec <&1; exec tmux attach-session -t "$TMUX_SESSION" )
