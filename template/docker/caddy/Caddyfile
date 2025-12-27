@@ -141,8 +141,42 @@ handle /r57.php {
 	respond "HONEYPOT TRIGGERED" 403
 }
 
+# Cache static assets with content hashes (immutable)
+handle /_astro/* {
+	header Cache-Control "public, max-age=31536000, immutable"
+	root * /srv
+	encode zstd gzip
+	try_files {path} {path}/index.html {path}.html
+	file_server {
+		precompressed br zstd gzip
+	}
+}
+
+# Cache favicon for 1 week
+handle /favicon.svg {
+	header Cache-Control "public, max-age=604800"
+	root * /srv
+	encode zstd gzip
+	file_server {
+		precompressed br zstd gzip
+	}
+}
+
+# HTML pages should always revalidate (SPA navigation)
+handle /*.html {
+	header Cache-Control "public, max-age=0, must-revalidate"
+	header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+	header Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
+	root * /srv
+	try_files {path} {path}/index.html {path}.html
+	file_server {
+		precompressed br zstd gzip
+	}
+}
+
 # Serve everything else as static files
 handle {
+	header Cache-Control "public, max-age=3600"
 	root * /srv
 	encode zstd gzip
 	try_files {path} {path}/index.html {path}.html
