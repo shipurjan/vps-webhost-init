@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="__#TEMPLATE#:DOMAIN__">
+	<div class="space-y-8">
+		<div class="space-y-4">
+			<h1 class="text-4xl font-bold text-gray-900">
+				__#TEMPLATE#:DOMAIN__ is live!
+			</h1>
+			<p class="text-lg text-gray-600">
+				Your VPS is running with <strong class="text-gray-900">Caddy</strong> (reverse proxy + auto HTTPS)
+				and <strong class="text-gray-900">Dozzle</strong> (logs at <code class="px-2 py-1 bg-gray-100 rounded text-sm">logs.__#TEMPLATE#:DOMAIN__</code>).
+			</p>
+			<p class="text-lg text-gray-600">
+				This frontend is <strong class="text-gray-900">Astro</strong> with vanilla JS.
+				Swap it for anything you want in <code class="px-2 py-1 bg-gray-100 rounded text-sm">~/__#TEMPLATE#:DOMAIN__/frontend</code>.
+			</p>
+		</div>
+
+		<nav>
+			<a
+				href="/about"
+				class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors"
+			>
+				About →
+			</a>
+		</nav>
+	</div>
+</Layout>

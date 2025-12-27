@@ -264,12 +264,12 @@ cp -r /tmp/vps-webhost-init/template "/root/$DOMAIN"
 
 # Replace placeholders with config values
 find "/root/$DOMAIN" -type f -exec sed -i \
-  -e "s|{{%INIT_TEMPLATE%:DOMAIN}}|$DOMAIN|g" \
-  -e "s|{{%INIT_TEMPLATE%:EMAIL}}|$EMAIL|g" \
-  -e "s|{{%INIT_TEMPLATE%:ADMIN_LOGIN}}|$ADMIN_LOGIN|g" \
-  -e "s|{{%INIT_TEMPLATE%:ADMIN_PASSWORD}}|$ADMIN_PASSWORD|g" \
-  -e "s|{{%INIT_TEMPLATE%:TELEGRAM_BOT_TOKEN}}|${TELEGRAM_BOT_TOKEN:-}|g" \
-  -e "s|{{%INIT_TEMPLATE%:TELEGRAM_CHAT_ID}}|${TELEGRAM_CHAT_ID:-}|g" \
+  -e "s|__#TEMPLATE#:DOMAIN__|$DOMAIN|g" \
+  -e "s|__#TEMPLATE#:EMAIL__|$EMAIL|g" \
+  -e "s|__#TEMPLATE#:ADMIN_LOGIN__|$ADMIN_LOGIN|g" \
+  -e "s|__#TEMPLATE#:ADMIN_PASSWORD__|$ADMIN_PASSWORD|g" \
+  -e "s|__#TEMPLATE#:TELEGRAM_BOT_TOKEN__|${TELEGRAM_BOT_TOKEN:-}|g" \
+  -e "s|__#TEMPLATE#:TELEGRAM_CHAT_ID__|${TELEGRAM_CHAT_ID:-}|g" \
   {} \;
 
 # Make scripts executable

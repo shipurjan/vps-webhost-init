@@ -1,21 +1,23 @@
 services:
-  # Frontend - static site
+  # Frontend - build only
   frontend:
     build:
       context: ../frontend
       dockerfile: Dockerfile
     container_name: frontend
     restart: unless-stopped
-    networks:
-      - web
+    volumes:
+      - frontend_dist:/dist
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      test: ["CMD", "test", "-f", "/dist/index.html"]
       interval: 30s
-      timeout: 10s
+      timeout: 5s
       retries: 3
       start_period: 10s
+    networks:
+      - web
 
-  # Caddy - Reverse proxy
+  # Caddy - Reverse proxy & static file server
   caddy:
     image: caddy:2.10.2-alpine
     container_name: caddy
@@ -28,6 +30,7 @@ services:
       - ./caddy/data:/data
       - ./caddy/config:/config
       - /var/log/caddy:/var/log/caddy
+      - frontend_dist:/srv:ro
     environment:
       - LOGS_USERNAME
       - LOGS_PASSWORD_HASH
@@ -60,5 +63,6 @@ networks:
     name: web
 
 volumes:
+  frontend_dist:
   caddy_data:
   caddy_config:

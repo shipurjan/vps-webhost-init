@@ -51,13 +51,62 @@ RESPONSE=$(curl -s -X POST -H "Authorization: Bearer $HETZNER_API_TOKEN" -H "Con
 echo "$RESPONSE" | jq -e '.error' >/dev/null 2>&1 && echo "Error: $(echo "$RESPONSE" | jq -r '.error.message')" && exit 1
 
 SERVER_ID=$(echo "$RESPONSE" | jq -r '.server.id')
-SERVER_IP=$(echo "$RESPONSE" | jq -r '.server.public_net.ipv4.ip')
-echo "Server created: $SERVER_IP"
+SERVER_IPV4=$(echo "$RESPONSE" | jq -r '.server.public_net.ipv4.ip')
+SERVER_IPV6=$(echo "$RESPONSE" | jq -r '.server.public_net.ipv6.ip' | sed 's|/64$||')
+echo "Server created: $SERVER_IPV4"
 
-# Update DOMAIN in config to use server IP
-TEMP_CONFIG=$(mktemp)
-sed "s/^DOMAIN=.*/DOMAIN=\"$SERVER_IP\"/" "$USER_CONFIG" > "$TEMP_CONFIG"
-USER_CONFIG="$TEMP_CONFIG"
+# Extract DOMAIN from config before modifying
+DOMAIN=$(grep '^DOMAIN=' "$USER_CONFIG" | cut -d= -f2 | tr -d '"')
+
+# Configure DNS if not using example.com
+if [ "$DOMAIN" != "example.com" ]; then
+  echo "Configuring DNS for $DOMAIN..."
+
+  # Get or create zone
+  ZONE_ID=$(curl -s -H "Authorization: Bearer $HETZNER_API_TOKEN" https://api.hetzner.cloud/v1/zones | jq -r ".zones[] | select(.name==\"$DOMAIN\") | .id")
+
+  if [ -z "$ZONE_ID" ]; then
+    echo "  Creating DNS zone..."
+    ZONE_RESPONSE=$(curl -s -X POST -H "Authorization: Bearer $HETZNER_API_TOKEN" -H "Content-Type: application/json" \
+      -d "{\"name\":\"$DOMAIN\",\"mode\":\"primary\",\"ttl\":3600}" \
+      https://api.hetzner.cloud/v1/zones)
+    ZONE_ID=$(echo "$ZONE_RESPONSE" | jq -r '.zone.id')
+  fi
+
+  # Delete existing A and AAAA records for @ and *
+  echo "  Cleaning old DNS records..."
+  for NAME in "@" "*"; do
+    for TYPE in "A" "AAAA"; do
+      curl -s -X DELETE -H "Authorization: Bearer $HETZNER_API_TOKEN" \
+        "https://api.hetzner.cloud/v1/zones/$DOMAIN/rrsets/$NAME/$TYPE" 2>/dev/null || true
+    done
+  done
+
+  # Create new A records (@ and *)
+  echo "  Creating A records..."
+  for NAME in "@" "*"; do
+    curl -s -X POST -H "Authorization: Bearer $HETZNER_API_TOKEN" -H "Content-Type: application/json" \
+      -d "{\"name\":\"$NAME\",\"type\":\"A\",\"ttl\":3600,\"records\":[{\"value\":\"$SERVER_IPV4\"}]}" \
+      "https://api.hetzner.cloud/v1/zones/$DOMAIN/rrsets" >/dev/null
+  done
+
+  # Create new AAAA records (@ and *)
+  echo "  Creating AAAA records..."
+  for NAME in "@" "*"; do
+    curl -s -X POST -H "Authorization: Bearer $HETZNER_API_TOKEN" -H "Content-Type: application/json" \
+      -d "{\"name\":\"$NAME\",\"type\":\"AAAA\",\"ttl\":3600,\"records\":[{\"value\":\"$SERVER_IPV6\"}]}" \
+      "https://api.hetzner.cloud/v1/zones/$DOMAIN/rrsets" >/dev/null
+  done
+
+  echo "  DNS configured: $DOMAIN -> $SERVER_IPV4"
+  TEMP_CONFIG="$USER_CONFIG"
+else
+  # Use example.com - set DOMAIN to server IP
+  echo "Using example.com - setting DOMAIN to $SERVER_IPV4"
+  TEMP_CONFIG=$(mktemp)
+  sed "s/^DOMAIN=.*/DOMAIN=\"$SERVER_IPV4\"/" "$USER_CONFIG" > "$TEMP_CONFIG"
+  USER_CONFIG="$TEMP_CONFIG"
+fi
 
 # Wait for running status
 echo "Waiting for server..."
@@ -75,7 +124,7 @@ ssh-add -l 2>/dev/null || echo "  Warning: No keys in ssh-agent"
 
 for i in {1..30}; do
   echo "  Attempt $i/30"
-  if ssh -o ConnectTimeout=5 $SSH_OPTS[@] root@$SERVER_IP exit 2>&1; then
+  if ssh -o ConnectTimeout=5 $SSH_OPTS[@] root@$SERVER_IPV4 exit 2>&1; then
     break
   else
     SSH_ERROR=$?
@@ -87,16 +136,19 @@ done
 
 # Copy files
 echo "Copying files..."
-scp -q $SSH_OPTS[@] "$ROOT_DIR/init.sh" "$USER_CONFIG" root@$SERVER_IP:/root/
+scp -q $SSH_OPTS[@] "$ROOT_DIR/init.sh" "$USER_CONFIG" root@$SERVER_IPV4:/root/
 
 # Run init
 echo "Running init script..."
-ssh $SSH_OPTS[@] root@$SERVER_IP "bash /root/init.sh /root/$(basename "$USER_CONFIG")"
+ssh $SSH_OPTS[@] root@$SERVER_IPV4 "bash /root/init.sh /root/$(basename "$USER_CONFIG")"
 
 echo ""
 echo "Deployment complete!"
-echo "Connect: ssh root@$SERVER_IP"
+echo "Connect: ssh root@$SERVER_IPV4"
+if [ "$DOMAIN" != "example.com" ]; then
+  echo "Domain:  https://$DOMAIN (DNS: $SERVER_IPV4)"
+fi
 echo "Delete:  curl -X DELETE -H \"Authorization: Bearer \$HETZNER_API_TOKEN\" https://api.hetzner.cloud/v1/servers/$SERVER_ID"
 
 # Cleanup
-rm -f "$TEMP_CONFIG"
+[ -f "$TEMP_CONFIG" ] && rm -f "$TEMP_CONFIG"

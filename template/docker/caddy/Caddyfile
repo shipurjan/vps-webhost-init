@@ -3,7 +3,7 @@
 }
 
 # Main site
-{{%INIT_TEMPLATE%:DOMAIN}} {
+__#TEMPLATE#:DOMAIN__ {
 	log access-file {
 		output file /var/log/caddy/access.log
 	}
@@ -148,15 +148,17 @@
 		Referrer-Policy strict-origin-when-cross-origin
 	}
 
-	# Reverse proxy to frontend container
-	reverse_proxy frontend:3000
+	# Serve static files from volume
+	root * /srv
+	file_server
+	try_files {path} /index.html
 }
 
-www.{{%INIT_TEMPLATE%:DOMAIN}} {
-	redir https://{{%INIT_TEMPLATE%:DOMAIN}}{uri} permanent
+www.__#TEMPLATE#:DOMAIN__ {
+	redir https://__#TEMPLATE#:DOMAIN__{uri} permanent
 }
 
-logs.{{%INIT_TEMPLATE%:DOMAIN}} {
+logs.__#TEMPLATE#:DOMAIN__ {
 	basic_auth {
 		{$LOGS_USERNAME} {$LOGS_PASSWORD_HASH}
 	}

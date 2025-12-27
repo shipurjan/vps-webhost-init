@@ -1,7 +1,17 @@
-FROM node:24.11.1-alpine3.23
-RUN npm install -g http-server && \
-    apk add --no-cache wget
+FROM node:24.12.0-alpine3.23 AS builder
+
 WORKDIR /app
-COPY index.html .
-EXPOSE 3000
-CMD ["http-server", "-p", "3000"]
+
+# Install dependencies
+COPY package*.json ./
+RUN npm ci
+
+# Copy source and build
+COPY . .
+RUN npm run build
+
+# Output stage - just copy dist to volume
+FROM alpine:3.23
+WORKDIR /dist
+COPY --from=builder /app/dist ./
+CMD ["tail", "-f", "/dev/null"]
