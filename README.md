@@ -14,31 +14,55 @@ This is infrastructure automation, not magic. Read the code or don't run it.
 
 ## Usage
 
-Run on a fresh Debian/Ubuntu server:
+### Option 1: Deploy to Hetzner Cloud (Recommended)
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/shipurjan/vps-webhost-init/refs/heads/master/init.sh | bash
-```
+1. **Setup credentials:**
+   ```bash
+   cp default.env .env
+   vim .env  # Add your HETZNER_API_TOKEN and SSH_KEY
+   ```
 
-### Using a custom configuration file
+2. **Setup config:**
+   ```bash
+   cp default.conf deploy.conf
+   vim deploy.conf  # Fill in DOMAIN, EMAIL, etc.
+   ```
 
-You can provide a configuration file (local or remote) to skip interactive prompts:
+3. **Deploy:**
+   ```bash
+   ./deploy.sh
+   ```
 
-```bash
-# With a local config file
-curl -fsSL https://raw.githubusercontent.com/shipurjan/vps-webhost-init/refs/heads/master/init.sh | bash -s -- /path/to/config.conf
+The script will automatically:
+- Create a new Hetzner server (or replace existing one with same name)
+- Update DOMAIN to the server's IP address
+- Run the init script on the server
+- Show you how to connect
 
-# With a remote config file
-curl -fsSL https://raw.githubusercontent.com/shipurjan/vps-webhost-init/refs/heads/master/init.sh | bash -s -- https://example.com/config.conf
-```
+### Option 2: Manual setup on any VPS
 
-The custom config file will be merged with [default.conf](default.conf), with your values overriding the defaults.
+1. **Download the default config:**
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/shipurjan/vps-webhost-init/refs/heads/master/default.conf -o setup.conf
+   ```
+
+2. **Edit the config:**
+   ```bash
+   vim setup.conf  # Fill in your values
+   ```
+
+3. **Run the init script:**
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/shipurjan/vps-webhost-init/refs/heads/master/init.sh | bash -s -- setup.conf
+   ```
+
+The config file is merged with defaults, with your values overriding the base configuration.
 
 ## What Gets Installed
 
 ### System Packages
 - **Core tools**: curl, wget, git, tmux, ufw, fail2ban, jq, xsel
-- **Developer tools**: vim, nano, ripgrep, fd-find, whois, tree
+- **Developer tools**: vim, ripgrep, fd-find, whois, tree
 - **Build essentials**: ca-certificates, gnupg, gawk, perl, grep, sed
 
 ### Developer Environment
@@ -140,8 +164,31 @@ Files use `{{%INIT_TEMPLATE%:VARIABLE}}` placeholders that get replaced with you
 - `{{%INIT_TEMPLATE%:ADMIN_LOGIN}}` → Admin username
 - `{{%INIT_TEMPLATE%:ADMIN_PASSWORD}}` → Admin password
 
-## Local testing
+## Local Development
 
-```bash
-docker build -t setup-hetzner . && docker run --rm -it setup-hetzner
-```
+To test or contribute to this project:
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/shipurjan/vps-webhost-init.git
+   cd vps-webhost-init
+   ```
+
+2. **Setup Hetzner credentials:**
+   ```bash
+   cp default.env .env
+   vim .env  # Add your HETZNER_API_TOKEN and SSH_KEY
+   ```
+
+3. **Setup deployment config:**
+   ```bash
+   cp default.conf deploy.conf
+   vim deploy.conf  # Fill in your values
+   ```
+
+4. **Test deployment:**
+   ```bash
+   ./deploy.sh
+   ```
+
+The `.env` and `deploy.conf` files are gitignored to keep your credentials safe.
