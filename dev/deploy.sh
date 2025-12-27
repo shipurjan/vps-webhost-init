@@ -4,9 +4,13 @@ set -e
 # Load zsh config to get SSH aliases (for 1Password/WSL integration)
 [[ -f ~/.zshrc ]] && source ~/.zshrc
 
+# Get script directory
+SCRIPT_DIR="${0:A:h}"
+ROOT_DIR="$SCRIPT_DIR/.."
+
 # Load and validate
-[ ! -f .env ] && echo "Error: .env not found. Run: cp default.env .env && nano .env" && exit 1
-source .env
+[ ! -f "$SCRIPT_DIR/.env" ] && echo "Error: .env not found. Run: cd dev && cp default.env .env && vim .env" && exit 1
+source "$SCRIPT_DIR/.env"
 [ -z "$HETZNER_API_TOKEN" ] && echo "Error: HETZNER_API_TOKEN not set" && exit 1
 [ -z "$SSH_KEY" ] && echo "Error: SSH_KEY not set" && exit 1
 
@@ -16,12 +20,12 @@ LOCATION="nbg1"          # Nuremberg, Germany
 IMAGE="debian-13"        # Debian 13
 SERVER_NAME="vps-webhost-init"
 
-# Use command line arg if provided, otherwise use deploy.conf
-USER_CONFIG="${1:-deploy.conf}"
+# Use command line arg if provided, otherwise use deploy.conf from dev/
+USER_CONFIG="${1:-$SCRIPT_DIR/deploy.conf}"
 
 if [ ! -f "$USER_CONFIG" ]; then
   echo "Error: Config not found: $USER_CONFIG"
-  echo "Create one: cp default.conf deploy.conf && vim deploy.conf"
+  echo "Create one: cd dev && cp ../default.conf deploy.conf && vim deploy.conf"
   exit 1
 fi
 
@@ -83,7 +87,7 @@ done
 
 # Copy files
 echo "Copying files..."
-scp -q $SSH_OPTS[@] init.sh "$USER_CONFIG" root@$SERVER_IP:/root/
+scp -q $SSH_OPTS[@] "$ROOT_DIR/init.sh" "$USER_CONFIG" root@$SERVER_IP:/root/
 
 # Run init
 echo "Running init script..."

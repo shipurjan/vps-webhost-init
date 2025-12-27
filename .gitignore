@@ -1,6 +1,6 @@
 # Environment files with secrets
-.env
-deploy.conf
+dev/.env
+dev/deploy.conf
 
 # Editor files
 *.swp

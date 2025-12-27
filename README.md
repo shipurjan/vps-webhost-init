@@ -35,17 +35,18 @@ The config file is merged with defaults, with your values overriding the base co
 
 ### Automated Deployment to Hetzner Cloud
 
-For automated deployment, use the included `deploy.sh` script:
+For automated deployment, use the included `dev/deploy.sh` script:
 
 1. **Setup credentials:**
    ```bash
+   cd dev
    cp default.env .env
    vim .env  # Add your HETZNER_API_TOKEN and SSH_KEY
    ```
 
 2. **Setup config:**
    ```bash
-   cp default.conf deploy.conf
+   cp ../default.conf deploy.conf
    vim deploy.conf  # Fill in DOMAIN, EMAIL, etc.
    ```
 
@@ -174,13 +175,14 @@ To test or contribute to this project:
 
 2. **Setup Hetzner credentials:**
    ```bash
+   cd dev
    cp default.env .env
    vim .env  # Add your HETZNER_API_TOKEN and SSH_KEY
    ```
 
 3. **Setup deployment config:**
    ```bash
-   cp default.conf deploy.conf
+   cp ../default.conf deploy.conf
    vim deploy.conf  # Fill in your values
    ```
 
@@ -189,4 +191,4 @@ To test or contribute to this project:
    ./deploy.sh
    ```
 
-The `.env` and `deploy.conf` files are gitignored to keep your credentials safe.
+The `dev/.env` and `dev/deploy.conf` files are gitignored to keep your credentials safe.
