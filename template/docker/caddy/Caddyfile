@@ -2,8 +2,8 @@
 	order handle before root
 }
 
-# Main site
-__#TEMPLATE#:DOMAIN__ {
+# Main site (HTTP only - disable HTTPS for testing)
+http://__#TEMPLATE#:DOMAIN__ {
 	log access-file {
 		output file /var/log/caddy/access.log
 	}
@@ -157,8 +157,8 @@ __#TEMPLATE#:DOMAIN__ {
 	}
 }
 
-www.__#TEMPLATE#:DOMAIN__ {
-	redir https://__#TEMPLATE#:DOMAIN__{uri} permanent
+http://www.__#TEMPLATE#:DOMAIN__ {
+	redir http://__#TEMPLATE#:DOMAIN__{uri} permanent
 }
 
 logs.__#TEMPLATE#:DOMAIN__ {
