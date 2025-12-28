@@ -26,11 +26,25 @@ jobs:
         working-directory: frontend
         run: npm run build
 
+      - name: Start preview server
+        working-directory: frontend
+        run: npm run preview &
+
+      - name: Wait for server
+        run: npx wait-on@9.0.3 http://localhost:4321 --timeout 30000
+
       - name: Run Lighthouse CI
         uses: treosh/lighthouse-ci-action@v12
+        id: LHCIAction
         with:
           urls: |
             http://localhost:4321
           configPath: ./frontend/.lighthouserc.json
           uploadArtifacts: true
-          temporaryPublicStorage: true
+
+      - name: Calculate average score
+        run: |
+          AVERAGE=$(echo '${{ steps.LHCIAction.outputs.manifest }}' | jq '[.[] | (.summary | to_entries | map(.value) | add / length)] | add / length')
+          echo "## 🔦 Lighthouse Average Score" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Overall Average: $(echo "$AVERAGE * 100" | bc)%**" >> $GITHUB_STEP_SUMMARY

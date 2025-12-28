@@ -2,14 +2,8 @@
   "ci": {
     "collect": {
       "numberOfRuns": 3,
-      "startServerCommand": "npm run preview",
-      "url": ["http://localhost:4321"]
-    },
-    "assert": {
-      "preset": "lighthouse:no-pwa"
-    },
-    "upload": {
-      "target": "temporary-public-storage"
+      "url": ["http://localhost:4321"],
+      "settings": { "configPath": "./frontend/lighthouse-config.mjs" }
     }
   }
 }
