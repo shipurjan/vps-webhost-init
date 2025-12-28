@@ -1,16 +1,16 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
-import compressor from 'astro-compressor';
+import tailwindcss from '@tailwindcss/vite'
+import compressor from 'astro-compressor'
+import { defineConfig } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
-  site: process.env.DOMAIN ? `https://${process.env.DOMAIN}` : undefined,
+  ...(process.env.DOMAIN && { size: `https://${process.env.DOMAIN}` }),
   integrations: [compressor()],
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
   },
   devToolbar: {
-    enabled: false
-  }
-});
+    enabled: false,
+  },
+})

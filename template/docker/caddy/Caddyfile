@@ -176,6 +176,43 @@ handle /*.html {
 	}
 }
 
+# Serve image files (no compression needed - already compressed)
+handle /*.jpg {
+	header Cache-Control "public, max-age=604800"
+	root * /srv
+	file_server
+}
+handle /*.jpeg {
+	header Cache-Control "public, max-age=604800"
+	root * /srv
+	file_server
+}
+handle /*.png {
+	header Cache-Control "public, max-age=604800"
+	root * /srv
+	file_server
+}
+handle /*.webp {
+	header Cache-Control "public, max-age=604800"
+	root * /srv
+	file_server
+}
+handle /*.gif {
+	header Cache-Control "public, max-age=604800"
+	root * /srv
+	file_server
+}
+handle /*.ico {
+	header Cache-Control "public, max-age=604800"
+	root * /srv
+	file_server
+}
+handle /*.avif {
+	header Cache-Control "public, max-age=604800"
+	root * /srv
+	file_server
+}
+
 # Serve everything else as static files
 handle {
 	header Cache-Control "public, max-age=3600"

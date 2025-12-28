@@ -1,43 +1,62 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import VpsHostingIcon from '@/assets/vps-hosting.svg'
+import Layout from '@/layouts/Layout.astro'
 ---
 
 <Layout
-	title="About - __#TEMPLATE#:DOMAIN__"
-	description="Learn more about this VPS setup powered by vps-webhost-init with Astro, Caddy, and Docker."
+  title="About - __#TEMPLATE#:DOMAIN__"
+  description="Learn more about this VPS setup powered by vps-webhost-init with Astro, Caddy, and Docker."
 >
-	<div class="space-y-8">
-		<h1 class="text-4xl font-bold text-gray-900">About This Setup</h1>
+  <div class="space-y-8">
+    <div class="flex flex-col w-fit justify-center items-center space-y-4 mb-8">
+      <VpsHostingIcon />
 
-		<div class="space-y-6">
-			<div>
-				<h2 class="text-2xl font-semibold text-gray-900 mb-3">Stack</h2>
-				<ul class="space-y-2 text-gray-600">
-					<li><strong class="text-gray-900">Frontend:</strong> Astro (this page)</li>
-					<li><strong class="text-gray-900">Reverse Proxy:</strong> Caddy with automatic HTTPS</li>
-					<li><strong class="text-gray-900">Logs:</strong> Dozzle at <code class="px-2 py-1 bg-gray-100 rounded text-sm">logs.__#TEMPLATE#:DOMAIN__</code></li>
-					<li><strong class="text-gray-900">Container Management:</strong> Docker Compose</li>
-					<li><strong class="text-gray-900">Monitoring:</strong> lazydocker in tmux</li>
-				</ul>
-			</div>
+      <h1 class="text-4xl font-bold text-gray-900">About This Setup</h1>
+    </div>
 
-			<div>
-				<h2 class="text-2xl font-semibold text-gray-900 mb-3">Security</h2>
-				<ul class="space-y-2 text-gray-600">
-					<li>fail2ban protecting SSH and honeypot endpoints</li>
-					<li>Automatic SSL certificates via Let's Encrypt</li>
-					<li>Docker network isolation</li>
-				</ul>
-			</div>
-		</div>
+    <div class="space-y-6">
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-900 mb-3">Stack</h2>
+        <ul class="space-y-2 text-gray-600">
+          <li>
+            <strong class="text-gray-900">Frontend:</strong> Astro (this page)
+          </li>
+          <li>
+            <strong class="text-gray-900">Reverse Proxy:</strong> Caddy with automatic
+            HTTPS
+          </li>
+          <li>
+            <strong class="text-gray-900">Logs:</strong> Dozzle at <code
+              class="px-2 py-1 bg-gray-100 rounded text-sm"
+              >logs.__#TEMPLATE#:DOMAIN__</code
+            >
+          </li>
+          <li>
+            <strong class="text-gray-900">Container Management:</strong> Docker Compose
+          </li>
+          <li>
+            <strong class="text-gray-900">Monitoring:</strong> lazydocker in tmux
+          </li>
+        </ul>
+      </div>
 
-		<nav>
-			<a
-				href="/"
-				class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors"
-			>
-				← Back to Home
-			</a>
-		</nav>
-	</div>
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-900 mb-3">Security</h2>
+        <ul class="space-y-2 text-gray-600">
+          <li>fail2ban protecting SSH and honeypot endpoints</li>
+          <li>Automatic SSL certificates via Let's Encrypt</li>
+          <li>Docker network isolation</li>
+        </ul>
+      </div>
+    </div>
+
+    <nav>
+      <a
+        href="/"
+        class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors"
+      >
+        ← Back to Home
+      </a>
+    </nav>
+  </div>
 </Layout>
