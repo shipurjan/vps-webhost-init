@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="assets/logo.svg" alt="vps-webhost-init logo" width="200">
-</p>
+<img src="assets/logo.svg" alt="vps-webhost-init logo" width="200">
 
 # vps-webhost-init
 
