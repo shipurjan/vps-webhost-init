@@ -89,12 +89,7 @@ The template includes optional monitoring scripts that send Telegram notificatio
    TELEGRAM_CHAT_ID="123456789"
    ```
 
-4. **Enable cron jobs:**
-   ```bash
-   (crontab -l 2>/dev/null; cat ~/[domain]/crontab.example) | crontab -
-   ```
-
-See [template/crontab.example](template/crontab.example) for cron schedule details.
+Cron jobs are installed automatically. See [template/crontab.example](template/crontab.example) for schedule details.
 
 **Note:** If you don't configure Telegram, monitoring scripts will silently skip notifications.
 
