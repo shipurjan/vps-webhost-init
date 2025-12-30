@@ -2,7 +2,7 @@
 
 # webserver-printer
 
-A script to set up a fresh Debian/Ubuntu VPS for hosting dockerized websites.
+One command to provision a production-ready VPS with Docker, auto-HTTPS, fail2ban honeypots, GitHub CI/CD, and a Lighthouse-perfect SPA Astro frontend.
 
 ## ⚠️ Security Warning
 
@@ -35,79 +35,23 @@ Run on any fresh Debian/Ubuntu VPS:
 
 The config file is merged with defaults, with your values overriding the base configuration.
 
-### Automated Deployment to Hetzner Cloud
-
-For automated deployment, use the included `dev/deploy.sh` script:
-
-1. **Setup credentials:**
-   ```bash
-   cd dev
-   cp default.env .env
-   vim .env  # Add your HETZNER_API_TOKEN and SSH_KEY
-   ```
-
-2. **Setup config:**
-   ```bash
-   cp ../default.conf deploy.conf
-   vim deploy.conf  # Fill in DOMAIN, EMAIL, etc.
-   ```
-
-3. **Deploy:**
-   ```bash
-   ./deploy.sh
-   ```
-
-The script will automatically create a Hetzner server, update the config, and run the init script.
-
 ## What Gets Installed
 
-### System Packages
-- **Core tools**: curl, wget, git, tmux, ufw, fail2ban, jq, xsel
-- **Developer tools**: vim, ripgrep, fd-find, whois, tree
-- **Build essentials**: ca-certificates, gnupg, gawk, perl, grep, sed
+### Shell & Tools
+- **Zsh** with Oh My Zsh + Powerlevel10k theme
+- **Tmux** with TPM, session persistence, OSC 52 clipboard, auto-attach on SSH
+- **Lazydocker** for Docker management
+- CLI tools: ripgrep, fd-find, fzf, jq, vim, git, curl, wget
 
-### Developer Environment
-- **Zsh** with Oh My Zsh framework
-  - **Theme**: Powerlevel10k with pre-configured prompt
-  - **Plugins**: git, docker, docker-compose, sudo, fzf, colored-man-pages, extract, history, command-not-found, ufw, zsh-autosuggestions
-- **Tmux** with Plugin Manager (TPM)
-  - **Plugins**: sensible, yank, resurrect, continuum, pain-control, copycat
-  - **Features**: Vi key bindings, OSC 52 clipboard support over SSH
-  - **Auto-attach**: Automatically enters tmux session on SSH login
-
-### Docker Infrastructure
-- **Docker & Docker Compose** - Latest stable versions
-- **Lazydocker** - TUI for Docker management
-- **Network**: Isolated Docker network for containers
-- **Reverse Proxy**: Caddy with automatic HTTPS (Let's Encrypt)
+### Docker Stack
+- **Frontend**: Astro + TypeScript + Tailwind CSS, pre-compressed (Brotli/zstd), View Transitions
+- **Caddy**: Reverse proxy with auto-HTTPS, security headers, honeypot routes
+- **Dozzle**: Log viewer at `logs.$DOMAIN`
 
 ### Security
-- **SSH Hardening** - Secure remote access configuration
-  - Password authentication disabled (key-only)
-  - Root login with SSH keys only
-  - Configurable custom port to reduce bot spam
-- **fail2ban** - Intrusion prevention with custom honeypot detection
-  - SSH brute force protection (3 failed attempts = 1 hour ban)
-  - Honeypot traps for common attack paths (/wp-admin, /phpmyadmin, /.env, etc.)
-  - Docker-aware iptables rules (uses DOCKER-USER chain)
-  - Telegram alerts on bans (if configured)
-- **UFW** - Firewall (available but not auto-configured)
-- **Caddy honeypots** - Bot detection and blocking
-
-### Project Structure
-- Template copied to `/root/$DOMAIN/`
-- Git repository initialized with initial commit
-- Docker Compose stack with:
-  - **Frontend**: Minimal Astro with TypeScript and Tailwind CSS
-    - No JavaScript frameworks (add React/Vue/Svelte if needed)
-    - Astro View Transitions for lightweight SPA behavior
-    - Pre-compressed with Brotli/zstd for optimal performance
-  - **Caddy**: Serves static files directly (ports 80/443)
-    - Automatic HTTPS with Let's Encrypt
-    - Brotli/zstd/gzip compression support
-    - Security headers and honeypot protection
-  - **Dozzle**: Log viewer (logs.$DOMAIN)
-- Environment files with bcrypt-hashed credentials
+- **SSH**: Key-only auth, optional custom port
+- **fail2ban**: SSH protection + 50 honeypot patterns (wp-admin, phpmyadmin, .env, etc.), Docker-aware iptables
+- **Caddy**: Bot blocking (GPTBot, CCBot, etc.), security headers, CSP
 
 ## Monitoring (Optional)
 
@@ -158,16 +102,6 @@ Default configuration in [default.conf](default.conf):
 - `TELEGRAM_CHAT_ID` - (Optional) Your Telegram chat ID for alerts
 - `SSH_PORT` - SSH port (default: 22, change to reduce bot spam)
 
-## Infrastructure Created
-
-After running init.sh, you'll have:
-- Zsh with Powerlevel10k as default shell
-- Tmux session named after your domain with lazydocker in split pane
-- Docker containers running your web stack
-- SSL certificates automatically managed by Caddy
-- fail2ban actively blocking attacks
-- Git repository at `/root/$DOMAIN/` ready for version control
-
 ## Template System
 
 Files use `__#TEMPLATE#:VARIABLE__` placeholders that get replaced with your configuration:
@@ -178,32 +112,13 @@ Files use `__#TEMPLATE#:VARIABLE__` placeholders that get replaced with your con
 
 The placeholder format is designed to be compatible with Astro and other modern frontend frameworks.
 
-## Local Development
+## GitHub CI/CD
 
-To test or contribute to this project:
+The template includes GitHub Actions workflows:
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/shipurjan/webserver-printer.git
-   cd webserver-printer
-   ```
+- **ci.yml** - Type checking and build validation on PR/push
+- **deploy.yml** - SSH deployment to VPS after CI passes
+- **lighthouse.yml** - Performance scoring on pull requests (runs 3x, averages results)
+- **gitleaks.yml** - Daily secret scanning of git history
 
-2. **Setup Hetzner credentials:**
-   ```bash
-   cd dev
-   cp default.env .env
-   vim .env  # Add your HETZNER_API_TOKEN and SSH_KEY
-   ```
-
-3. **Setup deployment config:**
-   ```bash
-   cp ../default.conf deploy.conf
-   vim deploy.conf  # Fill in your values
-   ```
-
-4. **Test deployment:**
-   ```bash
-   ./deploy.sh
-   ```
-
-The `dev/.env` and `dev/deploy.conf` files are gitignored to keep your credentials safe.
+The init script generates Ed25519 deploy keys for GitHub and configures SSH aliases for seamless git operations.
