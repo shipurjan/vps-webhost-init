@@ -1,4 +1,4 @@
-# Crontab example for vps-webhost-init monitoring
+# Crontab example for webserver-printer monitoring
 # To install: crontab -e and add the lines you want
 # Or: (crontab -l 2>/dev/null; cat crontab.example) | crontab -
 

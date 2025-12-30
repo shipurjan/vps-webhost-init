@@ -12,7 +12,7 @@ LAZYDOCKER_COMMIT="78edbf3d2e3bb79440bdb88f4382cab9f81c43e4"
 TPM_COMMIT="99469c4a9b1ccf77fade25842dc7bafbc8ce9946"
 
 # Default config URL
-DEFAULT_CONFIG_URL="https://raw.githubusercontent.com/shipurjan/vps-webhost-init/refs/heads/master/default.conf"
+DEFAULT_CONFIG_URL="https://raw.githubusercontent.com/shipurjan/webserver-printer/refs/heads/master/default.conf"
 
 # Parse command line arguments
 USER_CONFIG_SOURCE=""
@@ -70,7 +70,7 @@ apt install -y curl
 # Load default configuration
 CONFIG_FILE="/root/setup-config.sh"
 echo "=== Loading default configuration (branch: $BRANCH) ==="
-curl -fsSL "https://raw.githubusercontent.com/shipurjan/vps-webhost-init/refs/heads/$BRANCH/default.conf" -o "$CONFIG_FILE"
+curl -fsSL "https://raw.githubusercontent.com/shipurjan/webserver-printer/refs/heads/$BRANCH/default.conf" -o "$CONFIG_FILE"
 
 # Load user configuration
 echo "=== Loading user configuration ==="
@@ -230,7 +230,7 @@ git -C /root/.oh-my-zsh/custom/themes/powerlevel10k checkout $POWERLEVEL10K_COMM
 sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' /root/.zshrc
 
 # Download powerlevel10k config
-curl -fsSL "https://raw.githubusercontent.com/shipurjan/vps-webhost-init/refs/heads/$BRANCH/p10k.zsh" -o /root/.p10k.zsh
+curl -fsSL "https://raw.githubusercontent.com/shipurjan/webserver-printer/refs/heads/$BRANCH/p10k.zsh" -o /root/.p10k.zsh
 echo '[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh' >>/root/.zshrc
 
 # Pre-install gitstatusd for powerlevel10k
@@ -325,8 +325,8 @@ EOF
 
 # Clone repo and scaffold project from template
 echo "Cloning template from GitHub (branch: $BRANCH)"
-git clone --depth=1 --branch "$BRANCH" https://github.com/shipurjan/vps-webhost-init.git /tmp/vps-webhost-init
-cp -r /tmp/vps-webhost-init/template "/root/$DOMAIN"
+git clone --depth=1 --branch "$BRANCH" https://github.com/shipurjan/webserver-printer.git /tmp/webserver-printer
+cp -r /tmp/webserver-printer/template "/root/$DOMAIN"
 
 # Replace placeholders with config values
 find "/root/$DOMAIN" -type f -exec sed -i \
@@ -452,7 +452,7 @@ cd "/root/$DOMAIN"
 git config --global core.pager ''
 git init -b master
 git add .
-git -c user.email='<>' -c user.name='vps-webhost-init' commit -m "init [skip ci]"
+git -c user.email='<>' -c user.name='webserver-printer' commit -m "init [skip ci]"
 
 # Set git identity for future commits
 git config --global user.email "$EMAIL"
@@ -629,7 +629,7 @@ cd /root
 git config --global --unset advice.detachedHead
 
 # Cleanup
-rm -rf /tmp/vps-webhost-init
+rm -rf /tmp/webserver-printer
 rm -f /root/init.sh /root/setup-config.sh /root/default.conf
 
 # Restore interactive frontend
@@ -650,7 +650,7 @@ if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
 
   MESSAGE="<b>✅ Server Setup Complete - $DOMAIN</b>
 
-Your VPS has been successfully configured with vps-webhost-init.
+Your VPS has been successfully configured with webserver-printer.
 
 <b>🔔 Notifications Enabled For:</b>
 • <b>fail2ban</b> - IP bans from honeypot traps and SSH attacks

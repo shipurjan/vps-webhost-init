@@ -18,7 +18,7 @@ source "$SCRIPT_DIR/.env"
 SERVER_TYPE="cx23"       # 2 vCPU, 4GB RAM, 40GB disk
 LOCATION="fsn1"          # Falkenstein, Germany
 IMAGE="debian-13"        # Debian 13
-SERVER_NAME="vps-webhost-init"
+SERVER_NAME="webserver-printer"
 
 # Parse command line parameters
 BRANCH="master"

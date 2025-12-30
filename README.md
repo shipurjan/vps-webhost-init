@@ -1,6 +1,6 @@
-<img src="assets/logo.svg" alt="vps-webhost-init logo" width="200">
+<img src="assets/logo.svg" alt="webserver-printer logo" width="200">
 
-# vps-webhost-init
+# webserver-printer
 
 A script to set up a fresh Debian/Ubuntu VPS for hosting dockerized websites.
 
@@ -20,7 +20,7 @@ Run on any fresh Debian/Ubuntu VPS:
 
 1. **Download the default config:**
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/shipurjan/vps-webhost-init/refs/heads/master/default.conf -o setup.conf
+   curl -fsSL https://raw.githubusercontent.com/shipurjan/webserver-printer/refs/heads/master/default.conf -o setup.conf
    ```
 
 2. **Edit the config:**
@@ -30,7 +30,7 @@ Run on any fresh Debian/Ubuntu VPS:
 
 3. **Run the init script:**
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/shipurjan/vps-webhost-init/refs/heads/master/init.sh | bash -s -- setup.conf
+   curl -fsSL https://raw.githubusercontent.com/shipurjan/webserver-printer/refs/heads/master/init.sh | bash -s -- setup.conf
    ```
 
 The config file is merged with defaults, with your values overriding the base configuration.
@@ -184,8 +184,8 @@ To test or contribute to this project:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/shipurjan/vps-webhost-init.git
-   cd vps-webhost-init
+   git clone https://github.com/shipurjan/webserver-printer.git
+   cd webserver-printer
    ```
 
 2. **Setup Hetzner credentials:**
