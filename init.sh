@@ -257,14 +257,6 @@ alias ll='ls -l'
 alias l='ls -lA'
 alias grep='grep --color=auto'
 alias diff='diff --color=auto'
-
-# Auto-attach to tmux session on SSH login
-if [[ -z "$TMUX" ]] && [[ -n "$SSH_CONNECTION" ]]; then
-  TMUX_SESSION=$(tmux ls 2>/dev/null | head -n1 | cut -d: -f1)
-  if [[ -n "$TMUX_SESSION" ]]; then
-    exec tmux attach-session -t "$TMUX_SESSION"
-  fi
-fi
 EOF
 
 chsh -s $(which zsh)
@@ -671,26 +663,6 @@ ssh -p $SSH_PORT root@$DOMAIN"
     -d "text=${MESSAGE}" > /dev/null
 fi
 
-# Use sanitized domain for tmux session name
-TMUX_SESSION="$DOMAIN_SANITIZED"
-echo "=== Creating tmux session: $TMUX_SESSION ==="
-
-# Create detached session in project directory (skip if exists)
-if ! tmux has-session -t "$TMUX_SESSION" 2>/dev/null; then
-  tmux new-session -d -s "$TMUX_SESSION" -c "/root/$DOMAIN"
-
-  # Split window vertically (left 70%, right 30%)
-  tmux split-window -h -t "$TMUX_SESSION:0" -p 30
-
-  # Select left pane (pane 0) - main console
-  tmux select-pane -t "$TMUX_SESSION:0.0"
-
-  # Send lazydocker command to right pane (pane 1)
-  tmux send-keys -t "$TMUX_SESSION:0.1" 'lazydocker' C-m
-
-  echo "Tmux session created."
-fi
-
 echo ""
 echo "==================================================================="
 echo "  Setup Complete!"
@@ -714,13 +686,4 @@ else
   echo "After reboot, containers will auto-start (restart: unless-stopped)"
   echo "==================================================================="
   echo ""
-fi
-
-# Attach if running interactively
-if [ -t 0 ]; then
-  echo "Attaching to tmux session..."
-  exec </dev/tty
-  exec tmux attach-session -t "$TMUX_SESSION"
-else
-  echo "Non-interactive mode. Connect via SSH to auto-attach."
 fi

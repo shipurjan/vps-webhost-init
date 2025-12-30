@@ -4,6 +4,8 @@
 
 One command to provision a production-ready VPS with Docker, auto-HTTPS, fail2ban honeypots, GitHub CI/CD, and a Lighthouse-perfect SPA Astro frontend.
 
+> **Note:** This is currently a personal script. It requires Debian/Ubuntu (apt), a domain pointed to your VPS, and SSH key access. May add multi-distro support and easier setup if there's interest.
+
 ## ⚠️ Security Warning
 
 **This script runs as root and makes significant system changes.** Before running it:
@@ -39,7 +41,7 @@ The config file is merged with defaults, with your values overriding the base co
 
 ### Shell & Tools
 - **Zsh** with Oh My Zsh + Powerlevel10k theme
-- **Tmux** with TPM, session persistence, OSC 52 clipboard, auto-attach on SSH
+- **Tmux** with TPM, session persistence, OSC 52 clipboard
 - **Lazydocker** for Docker management
 - CLI tools: ripgrep, fd-find, fzf, jq, vim, git, curl, wget
 
