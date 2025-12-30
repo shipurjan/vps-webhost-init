@@ -6,6 +6,12 @@ One command to provision a production-ready VPS with Docker, auto-HTTPS, fail2ba
 
 > **Note:** This is currently a personal script. It requires Debian/Ubuntu (apt), a domain pointed to your VPS, and SSH key access. May add multi-distro support and easier setup if there's interest.
 
+## What You Get
+
+<img src="assets/lighthouse.png" alt="Deployed site with 100 Lighthouse scores" width="600">
+
+The script creates a complete GitHub repo for your domain with a Dockerized web stack, CI/CD pipelines, and a starter Astro site optimized for 100 Lighthouse scores across Performance, Accessibility, Best Practices, and SEO.
+
 ## ⚠️ Security Warning
 
 **This script runs as root and makes significant system changes.** Before running it:
