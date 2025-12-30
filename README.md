@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.svg" alt="vps-webhost-init logo" width="200">
+</p>
+
 # vps-webhost-init
 
 A script to set up a fresh Debian/Ubuntu VPS for hosting dockerized websites.
