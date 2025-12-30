@@ -5,7 +5,7 @@ set -e
 export DEBIAN_FRONTEND=noninteractive
 
 # Script version
-VERSION="0.0.3"
+VERSION="0.0.4"
 
 # Pinned versions
 OHMYZSH_COMMIT="92aed2e93624124182ba977a91efa5bbe1e76d5f"
@@ -515,7 +515,7 @@ EOF
   echo "==================================================================="
   echo ""
   echo "Press ENTER when you've added both deploy keys to GitHub..."
-  read
+  read </dev/tty
 
   # Push using RW key
   echo ""
@@ -607,7 +607,7 @@ EOF
   echo "Do NOT store the VPS_SSH_KEY anywhere else - only in GitHub secrets."
   echo ""
   echo "Press ENTER after you've completed all steps above..."
-  read
+  read </dev/tty
 
   # Delete GHA private key from server
   rm -f /root/.ssh/github_actions_key
