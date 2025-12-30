@@ -4,6 +4,9 @@ set -e
 # Prevent interactive prompts during package installation
 export DEBIAN_FRONTEND=noninteractive
 
+# Script version
+VERSION="0.0.1"
+
 # Pinned versions
 OHMYZSH_COMMIT="92aed2e93624124182ba977a91efa5bbe1e76d5f"
 ZSH_AUTOSUGGESTIONS_COMMIT="85919cd1ffa7d2d5412f6d3fe437ebdbeeec4fc5"
@@ -444,7 +447,7 @@ cd "/root/$DOMAIN"
 git config --global core.pager ''
 git init -b master
 git add .
-git -c user.email='<>' -c user.name='webserver-printer' commit -m "init [skip ci]"
+git -c user.email='<>' -c user.name='webserver-printer' commit -m "init (webserver-printer v$VERSION) [skip ci]"
 
 # Set git identity for future commits
 git config --global user.email "$EMAIL"

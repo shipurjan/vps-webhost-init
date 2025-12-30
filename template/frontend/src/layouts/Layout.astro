@@ -21,9 +21,12 @@ const { title, description } = Astro.props
     {description && <meta name="description" content={description} />}
     <ClientRouter />
   </head>
-  <body class="bg-gray-50 text-gray-900 min-h-screen">
-    <main class="max-w-4xl mx-auto px-6 py-12">
+  <body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+    <main class="max-w-4xl mx-auto px-6 py-12 flex-1">
       <slot />
     </main>
+    <footer class="text-center text-gray-400 text-sm py-4">
+      Created with <a href="https://github.com/shipurjan/webserver-printer" class="underline hover:text-gray-600">webserver-printer</a>
+    </footer>
   </body>
 </html>
