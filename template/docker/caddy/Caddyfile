@@ -11,14 +11,27 @@ __#TEMPLATE#:DOMAIN__ {
 		output stdout
 	}
 
-	@badbots {
+	# Block AI crawlers/scrapers (training data collectors)
+	@ai_bots {
 		header User-Agent *GPTBot*
+		header User-Agent *ChatGPT-User*
+		header User-Agent *OAI-SearchBot*
 		header User-Agent *Claude-Web*
+		header User-Agent *anthropic-ai*
+		header User-Agent *Amazonbot*
+		header User-Agent *Applebot-Extended*
+		header User-Agent *Bytespider*
 		header User-Agent *CCBot*
-		header User-Agent *bytespider*
+		header User-Agent *cohere-ai*
+		header User-Agent *Diffbot*
+		header User-Agent *FacebookBot*
+		header User-Agent *Google-Extended*
+		header User-Agent *meta-externalagent*
 		header User-Agent *PerplexityBot*
+		header User-Agent *omgili*
+		header User-Agent *Scrapy*
 	}
-	respond @badbots 403
+	respond @ai_bots 403
 
 handle /honeypot {
 	header X-Honeypot "trapped"

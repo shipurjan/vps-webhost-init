@@ -51,5 +51,8 @@ import { Picture } from 'astro:assets'
         About →
       </a>
     </nav>
+
+    <!-- Spider trap - invisible to users, bots will follow -->
+    <a href="/honeypot" class="absolute -left-[9999px]" aria-hidden="true" tabindex="-1"></a>
   </div>
 </Layout>
